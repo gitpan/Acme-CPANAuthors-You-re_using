@@ -15,13 +15,13 @@ Acme::CPANAuthors::You::re_using - We are the CPAN authors that have written the
 
 =head1 VERSION
 
-Version 0.02
+Version 0.03
 
 =cut
 
 our $VERSION;
 BEGIN {
- $VERSION = '0.02';
+ $VERSION = '0.03';
 }
 
 =head1 SYNOPSIS
@@ -59,7 +59,7 @@ sub register {
  my $auths = Acme::CPANAuthors::Utils::cpan_authors();
  croak 'Couldn\'t retrieve a valid Parse::CPAN::Authors object' unless $auths;
 
- my $installed = ExtUtils::Installed->new(extra_libs => \@INC);
+ my $installed = ExtUtils::Installed->new();
  croak 'Couldn\'t create a valid ExtUtils::Installed object' unless $installed;
 
  for ($installed->modules) {
@@ -115,7 +115,7 @@ You can find documentation for this module with the perldoc command.
 
 =head1 COPYRIGHT & LICENSE
 
-Copyright 2009 Vincent Pit, all rights reserved.
+Copyright 2009,2010 Vincent Pit, all rights reserved.
 
 This program is free software; you can redistribute it and/or modify it under the same terms as Perl itself.
 
