@@ -3,9 +3,8 @@ package Acme::CPANAuthors::You::re_using;
 use strict;
 use warnings;
 
-use Carp qw/croak/;
-
-use ExtUtils::Installed;
+use File::Find ();
+use Module::Metadata;
 
 use Acme::CPANAuthors::Utils;
 
@@ -15,13 +14,13 @@ Acme::CPANAuthors::You::re_using - We are the CPAN authors that have written the
 
 =head1 VERSION
 
-Version 0.03
+Version 0.04
 
 =cut
 
 our $VERSION;
 BEGIN {
- $VERSION = '0.03';
+ $VERSION = '0.04';
 }
 
 =head1 SYNOPSIS
@@ -48,23 +47,33 @@ This function is automatically called when you C<use> this module, unless you ha
 
 BEGIN { require Acme::CPANAuthors::Register; }
 
+our $SKIP;
+
 sub register {
- return if shift;
+ return if $SKIP;
 
  my %authors;
 
  my $pkgs = Acme::CPANAuthors::Utils::cpan_packages();
- croak 'Couldn\'t retrieve a valid Parse::CPAN::Packages object' unless $pkgs;
+ die 'Couldn\'t retrieve a valid Parse::CPAN::Packages object' unless $pkgs;
 
  my $auths = Acme::CPANAuthors::Utils::cpan_authors();
- croak 'Couldn\'t retrieve a valid Parse::CPAN::Authors object' unless $auths;
+ die 'Couldn\'t retrieve a valid Parse::CPAN::Authors object' unless $auths;
 
- my $installed = ExtUtils::Installed->new();
- croak 'Couldn\'t create a valid ExtUtils::Installed object' unless $installed;
+ my %modules;
 
- for ($installed->modules) {
-  next unless defined and $_ ne 'Perl';
+ File::Find::find({
+  wanted => sub {
+   return unless /\.pm$/;
+   my $mod = Module::Metadata->new_from_file($_);
+   return unless $mod;
+   @modules{grep $_, $mod->packages_inside} = ();
+  },
+  follow   => 0,
+  no_chdir => 1,
+ }, @INC);
 
+ for (keys %modules) {
   my $mod = $pkgs->package($_);
   next unless $mod;
 
@@ -85,13 +94,11 @@ sub register {
  Acme::CPANAuthors::Register->import(%authors);
 }
 
-our $SKIP;
-
-BEGIN { register($SKIP) }
+BEGIN { register() }
 
 =head1 DEPENDENCIES
 
-L<Carp>, L<ExtUtils::Installed>, L<Acme::CPANAuthors>.
+L<File::Find>, L<Module::Metadata>, L<Acme::CPANAuthors>.
 
 =head1 SEE ALSO
 
@@ -115,7 +122,7 @@ You can find documentation for this module with the perldoc command.
 
 =head1 COPYRIGHT & LICENSE
 
-Copyright 2009,2010 Vincent Pit, all rights reserved.
+Copyright 2009,2010,2011 Vincent Pit, all rights reserved.
 
 This program is free software; you can redistribute it and/or modify it under the same terms as Perl itself.
 

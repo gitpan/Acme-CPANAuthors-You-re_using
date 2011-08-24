@@ -24,6 +24,9 @@ if ($authors) {
  plan skip_all => $@;
 }
 
+diag 'Directories in @INC :';
+diag "  $_" for @INC;
+
 my $count = $authors->count;
 diag "$count authors found";
 cmp_ok $count, '>', 0, 'there are some authors';
@@ -31,4 +34,4 @@ cmp_ok $count, '>', 0, 'there are some authors';
 is   $authors->name('???'),      undef,         'wrong name';
 is   $authors->name('VPIT'),     'Vincent Pit', 'we should at least have this module';
 isnt $authors->name('ISHIGAKI'), undef,         'we should at least have Acme::CPANAuthors\' author';
-isnt $authors->name('LBROCARD'), undef,         'we should at least have Parse::CPAN::* author';
+isnt $authors->name('GAAS'),     undef,         'we should at least have LWP\'s author';

@@ -10,9 +10,9 @@ my $dist = 'Acme-CPANAuthors-You-re_using';
 $file = "lib/$file.pm";
 
 my %PREREQ_PM = (
- 'Acme::CPANAuthors'   => '0.09',
- 'Carp'                => 0,
- 'ExtUtils::Installed' => '1.999',
+ 'Acme::CPANAuthors' => '0.16',
+ 'File::Find'        => 0,
+ 'Module::Metadata'  => '1.000005',
 );
 
 my %META = (
@@ -44,7 +44,7 @@ WriteMakefile(
  MIN_PERL_VERSION => 5.006,
  META_MERGE       => \%META,
  dist             => {
-  PREOP    => "pod2text $file > \$(DISTVNAME)/README",
+  PREOP    => "pod2text -u $file > \$(DISTVNAME)/README",
   COMPRESS => 'gzip -9f', SUFFIX => 'gz'
  },
  clean            => {
