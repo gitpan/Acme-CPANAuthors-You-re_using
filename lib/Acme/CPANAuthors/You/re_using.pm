@@ -14,13 +14,13 @@ Acme::CPANAuthors::You::re_using - We are the CPAN authors that have written the
 
 =head1 VERSION
 
-Version 0.04
+Version 0.05
 
 =cut
 
 our $VERSION;
 BEGIN {
- $VERSION = '0.04';
+ $VERSION = '0.05';
 }
 
 =head1 SYNOPSIS
@@ -87,7 +87,7 @@ sub register {
 
   my $name;
   $name = $auth->name if defined $auth;
- 
+
   $authors{$cpanid} = defined $name ? $name : $cpanid;
  }
 
@@ -122,7 +122,7 @@ You can find documentation for this module with the perldoc command.
 
 =head1 COPYRIGHT & LICENSE
 
-Copyright 2009,2010,2011 Vincent Pit, all rights reserved.
+Copyright 2009,2010,2011,2013 Vincent Pit, all rights reserved.
 
 This program is free software; you can redistribute it and/or modify it under the same terms as Perl itself.
 
